@@ -1,0 +1,36 @@
+
+en:
+  admin:
+    actions:
+      specified_actions:
+        title:      "SpecifiedActions"
+        menu:       "SpecifiedActions for %{model_label} '%{object_label}'"
+        breadcrumb: "SpecifiedActions"
+        link:       "SpecifiedActions"
+        bulk_link:  "SpecifiedActions selected %{model_label_plural}"
+        done:       "SpecifiedActions done"
+        confirm:    "Are you sure?"
+
+        unknown_error:        "Unknown error"
+
+      specified_actions_for_collection:
+        title:      "SpecifiedActions"
+        menu:       "SpecifiedActions for %{model_label} '%{object_label}'"
+        breadcrumb: "SpecifiedActions"
+        link:       "SpecifiedActions"
+        bulk_link:  "SpecifiedActions selected %{model_label_plural}"
+        done:       "SpecifiedActions done"
+        confirm:    "Are you sure?"
+
+        unknown_error:        "Unknown error"
+
+      specified_actions_for_member:
+        title:      "SpecifiedActions"
+        menu:       "SpecifiedActions for %{model_label} '%{object_label}'"
+        breadcrumb: "SpecifiedActions"
+        link:       "SpecifiedActions"
+        bulk_link:  "SpecifiedActions selected %{model_label_plural}"
+        done:       "SpecifiedActions done"
+        confirm:    "Are you sure?"
+
+        unknown_error:        "Unknown error"

@@ -1,0 +1,10 @@
+ul
+  - _actions.each do |a|
+    li
+      span= a.name
+      br
+      .form_block
+        = form_for "specified_action", url: _url, method: :post do |f|
+          = f.hidden_field :name, value: a.name
+          = f.submit "сделать"
+      .ajax_result_block
