@@ -2,20 +2,20 @@
   #rails_admin_sitemap
     .controls
       - if @object 
-        - if @model_config.specified_actions_for_member and (_actions = @model_config.specified_actions_for_member.select(&:member?)).count > 0
-          = render partial: "rails_admin/main/specified_actions_list", locals: {_actions: _actions, _url: specified_actions_for_member_path(model_name: @abstract_model, id: @object.id)}
+        - if @actions_list.count > 0
+          = render partial: "rails_admin/main/specified_actions_list", locals: {_actions: @actions_list, _url: specified_actions_for_member_path(model_name: @abstract_model, id: @object.id)}
         - else
           h3 нечего делать c этой штукой
           
       - else
         - if @abstract_model 
-          - if @model_config.specified_actions_for_collection and (_actions = @model_config.specified_actions_for_collection.select(&:collection?)).count > 0
-            = render partial: "rails_admin/main/specified_actions_list", locals: {_actions: _actions, _url: specified_actions_for_collection_path(model_name: @abstract_model)}            
+          - if @actions_list.count > 0
+            = render partial: "rails_admin/main/specified_actions_list", locals: {_actions: @actions_list, _url: specified_actions_for_collection_path(model_name: @abstract_model)}            
           - else
             h3 нечего делать c этими штуками
               
         - else 
-          - if RailsAdmin::Config.specified_actions and (_actions = RailsAdmin::Config.specified_actions.select(&:root?)).count > 0
-            = render partial: "rails_admin/main/specified_actions_list", locals: {_actions: _actions, _url: specified_actions_path}
+          - if @actions_list.count > 0
+            = render partial: "rails_admin/main/specified_actions_list", locals: {_actions: @actions_list, _url: specified_actions_path}
           - else
             h3 нечего делать вообще

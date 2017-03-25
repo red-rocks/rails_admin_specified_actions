@@ -1,7 +1,7 @@
 ul
-  - _actions.each do |a|
+  - @actions_list.each do |a|
     li
-      span= a.name
+      span= a.label.blank? ? a.name : a.label
       br
       .form_block
         = form_for "specified_action", url: _url, method: :post do |f|

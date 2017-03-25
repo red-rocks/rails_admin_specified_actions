@@ -46,34 +46,37 @@ module RailsAdmin
                 specified_actions_path
               end
             end
-            if request.get? # Actions list
+            if @object
+              @actions_list = (@model_config.specified_actions_for_member || []).select(&:member?)
+            elsif @abstract_model
+              @actions_list = (@model_config.specified_actions_for_collection || []).select(&:collection?)
+            else
+              @actions_list = (RailsAdmin::Config.specified_actions || []).select(&:root?)
+            end
+            @actions_list.map! { |a| a.with({controller: self, object: @object, model: (@abstract_model and @abstract_model.model)}) }
 
+            if request.get? # Actions list
               respond_to do |format|
                 format.html { render @action.template_name }
                 format.js   { render @action.template_name, layout: false }
               end
 
             elsif request.post? # Do action
-              if @object
-                @actions_list = (@model_config.specified_actions_for_member || []).select(&:member?)
-              elsif @abstract_model
-                @actions_list = (@model_config.specified_actions_for_collection || []).select(&:collection?)
-              else
-                @actions_list = (RailsAdmin::Config.specified_actions || []).select(&:root?)
-              end
 
               if (_action = @actions_list.find { |a| a.name == params[:specified_action][:name].to_sym })
                 args = (params[:specified_action][:args] || {})
                 begin
                   @result = _action.process(@object || (@abstract_model and @abstract_model.model))
                 rescue Exception => ex
-                  @error_message    = ex.message
-                  @error_backtrace  = ex.backtrace.join("\n") if _action.can_view_backtrace(_current_user)
+                  @error_message    = _action.can_view_error_message ? ex.message : "Произошла ошибка ;("
+                  @error_backtrace  = ex.backtrace.join("\n") if _action.can_view_error_backtrace
                 end
+                @result ||= "Успешно!"
                 respond_to do |format|
                   format.html {
                     # render @action.template_name
-                    flash[:info] = @result ? @result : "Действие '#{_action.name}' выполнено"
+                    flash[:info] = "Попытка выполнения '#{_action.name}':"
+                    flash[:success] = @result unless @error_message
                     flash[:error] = @error_message if @error_message
                     flash[:alert] = "<pre>#{@error_backtrace}</pre>".html_safe if @error_backtrace
                     redirect_back(fallback_location: fallback_location)
