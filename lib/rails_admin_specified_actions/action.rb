@@ -71,6 +71,7 @@ module RailsAdmin
                   @error_message    = _action.can_view_error_message ? ex.message : "Произошла ошибка ;("
                   @error_backtrace  = ex.backtrace.join("\n") if _action.can_view_error_backtrace
                 end
+                @result = "Задача выполняется" if @result.is_a?(Thread)
                 @result ||= "Успешно!"
                 respond_to do |format|
                   format.html {

@@ -33,6 +33,7 @@ class RailsAdminSpecifiedActions::SpecifiedAction
 
 
   def process(target)
+    return threaded_process(target) if self.threaded
     if (_pb = self.process_block)
       if _pb.respond_to?(:call)
         _pb.call(target, self.args)
@@ -41,6 +42,20 @@ class RailsAdminSpecifiedActions::SpecifiedAction
       end
     else
       target and target.send(@name, self.args)
+    end
+  end
+
+  def threaded_process(target)
+    Thread.new(self, target) do |action, target|
+      if (_pb = action.process_block)
+        if _pb.respond_to?(:call)
+          _pb.call(target, action.args)
+        else
+          target and target.send(_pb, action.args)
+        end
+      else
+        target and target.send(@name, action.args)
+      end
     end
   end
 
@@ -93,6 +108,10 @@ class RailsAdminSpecifiedActions::SpecifiedAction
   end
 
   register_instance_option :ajax do
+    false
+  end
+
+  register_instance_option :threaded do
     false
   end
 
