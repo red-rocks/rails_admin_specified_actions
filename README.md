@@ -1,8 +1,6 @@
 # RailsAdminSpecifiedActions
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rails_admin_specified_actions`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Custom actoions for RailsAdmin
 
 ## Installation
 
@@ -22,7 +20,81 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Add the sort_embedded action for each model or only for models you need
+
+```ruby
+    RailsAdmin.config do |config|
+      config.actions do
+        ......
+        specified_actions do
+          RailsAdminSpecifiedActions.root_actions(self)
+        end # for root actions
+        specified_actions_for_collection # for collections actions
+        specified_actions_for_member # for member actions
+      end
+    end
+```
+
+For root actions you can create config/initializers/rails_admin_specified_actions_root.rb:
+```ruby
+require 'rails_admin_specified_actions'
+module RailsAdminSpecifiedActions
+
+  class << self
+
+    def root_actions(config)
+      config.action :some_root_action, :root do
+        process_block do
+          proc { |obj, args|
+            Rails.cache.clear # or some other global action
+          }
+        end
+      end
+    end
+
+  end
+
+end
+
+```
+or something like this.
+
+
+For collection and member actions actions:
+In rails_admin block:
+
+```ruby
+  config.specified_actions_for_collection do
+    action :count, :collection do
+      process_block do
+        proc { |model, args|
+          model.all.count
+        }
+      end
+    end
+  end
+```
+or
+
+```ruby
+  config.specified_actions_for_member do
+    action :touch, :member
+  end
+```
+or both.
+
+Options for action:
+
+| Option name              | Description                                                      |
+|--------------------------|------------------------------------------------------------------|
+| label                    | Displayed label                                                  |
+| process_block            | Proc for action or action name for \__send__()                   |
+| target                   | :root, :collection or :member                                    |
+| ajax                     | If you don`t need reload page                                    |
+| threaded                 | Create new thread for this action if that can take a long time   |
+| can_view_error_backtrace | If you want show error code backtrace. Perhaps, only for admins. |
+| can_view_error_message   | If you want show detailed errors message                         |
+
 
 ## Development
 
@@ -33,4 +105,3 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rails_admin_specified_actions.
-
