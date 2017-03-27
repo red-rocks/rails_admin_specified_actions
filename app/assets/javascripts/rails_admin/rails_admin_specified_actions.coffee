@@ -3,12 +3,13 @@ $(document).on "ajax:complete", "#rails_admin_specified_actions_wrapper #rails_a
   result_block = form.closest(".form_block").siblings(".ajax_result_block")
   error_block = result_block.siblings(".ajax_error_block")
   json = $.parseJSON(xhr.responseText)
-  result_block.stop().hide().html(json['result']).show(100)
-  error_block.stop().hide()
+  result_block.stop().hide().html(json['result'])
+  error_block.stop().hide().find("*").html("")
   if json['error']
     error_block.find(".message").html(json['error']['message'])     if json['error']['message']
     error_block.find(".backtrace").html(json['error']['backtrace']) if json['error']['backtrace']
     error_block.show(100)
+  result_block.show(100)
 
 
 $(document).on "ajax:before", "#rails_admin_specified_actions_wrapper #rails_admin_specified_actions .form_block form", (e)->
