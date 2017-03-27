@@ -78,15 +78,17 @@ module RailsAdmin
                     flash[:info] = "Попытка выполнения '#{_action.name}':"
                     flash[:success] = @result unless @error_message
                     flash[:error] = @error_message if @error_message
-                    flash[:alert] = "<pre>#{@error_backtrace}</pre>".html_safe if @error_backtrace
+                    if @error_backtrace
+                      flash[:alert] = "<button class='close show_hide' type='button'>⇕</button><pre>#{@error_backtrace}</pre>".html_safe
+                    end
                     redirect_back(fallback_location: fallback_location)
                   }
                   format.js   {
                     render json: {
-                      result: @result,
+                      result: @error_message || @result,
                       error: {
                         message:    @error_message,
-                        backtrace:  @error_backtrace
+                        backtrace:  (@error_backtrace and "<button class='close show_hide' type='button'>⇕</button><pre>#{@error_backtrace}</pre>".html_safe)
                       }.compact
                     }
                   }

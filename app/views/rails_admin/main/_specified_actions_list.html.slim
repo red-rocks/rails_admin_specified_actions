@@ -4,7 +4,13 @@ ul
       span= a.label.blank? ? a.name : a.label
       br
       .form_block
-        = form_for "specified_action", url: _url, method: :post do |f|
+        ruby:
+          opts = {url: _url, method: :post, data: {}}
+          opts[:data][:remote] = true if a.ajax
+        = form_for "specified_action", opts do |f|
           = f.hidden_field :name, value: a.name
           = f.submit "сделать"
       .ajax_result_block
+      .ajax_error_block
+        .message
+        .backtrace

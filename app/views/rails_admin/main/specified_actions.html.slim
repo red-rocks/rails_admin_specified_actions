@@ -1,5 +1,8 @@
-#rails_admin_sitemap_wrapper
-  #rails_admin_sitemap
+= stylesheet_link_tag 'rails_admin/rails_admin_specified_actions'
+= javascript_include_tag 'rails_admin/rails_admin_specified_actions'
+
+#rails_admin_specified_actions_wrapper
+  #rails_admin_specified_actions
     .controls
       - if @object 
         - if @actions_list.count > 0

@@ -93,4 +93,8 @@ class RailsAdminSpecifiedActions::SpecifiedAction
     nil
   end
 
+  register_instance_option :ajax do
+    false
+  end
+
 end
