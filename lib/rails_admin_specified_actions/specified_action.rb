@@ -7,7 +7,7 @@ class RailsAdminSpecifiedActions::SpecifiedAction
 
   attr_accessor :section, :defined, :order,
                 :abstract_model, :root, :parent,
-                :name, :args
+                :name
 
   def initialize(_parent, _name, _args = {}, &block)
     @parent = _parent
@@ -17,7 +17,7 @@ class RailsAdminSpecifiedActions::SpecifiedAction
     @abstract_model = parent.abstract_model unless parent.is_a?(RailsAdmin::Config::Actions::SpecifiedActions)
     @defined = false
     @name = _name.to_sym
-    @args   = _args || {}
+    args   = _args || {}
     @process_block = block
   end
 
@@ -32,29 +32,29 @@ class RailsAdminSpecifiedActions::SpecifiedAction
   end
 
 
-  def process(target)
-    return threaded_process(target) if self.threaded
+  def process(target, args)
+    return threaded_process(target, args) if self.threaded
     if (_pb = self.process_block)
       if _pb.respond_to?(:call)
-        _pb.call(target, self.args)
+        _pb.call(target, args)
       else
-        target and target.send(_pb, self.args)
+        target and target.send(_pb, args)
       end
     else
-      target and target.send(@name, self.args)
+      target and target.send(@name, args)
     end
   end
 
-  def threaded_process(target)
-    Thread.new(self, target) do |action, target|
+  def threaded_process(target, args)
+    Thread.new(self, target, args) do |action, target, args|
       if (_pb = action.process_block)
         if _pb.respond_to?(:call)
-          _pb.call(target, action.args)
+          _pb.call(target, args)
         else
-          target and target.send(_pb, action.args)
+          target and target.send(_pb, args)
         end
       else
-        target and target.send(@name, action.args)
+        target and target.send(action.name, args)
       end
     end
   end
@@ -113,6 +113,10 @@ class RailsAdminSpecifiedActions::SpecifiedAction
 
   register_instance_option :threaded do
     false
+  end
+
+  register_instance_option :args do
+    {}
   end
 
 end

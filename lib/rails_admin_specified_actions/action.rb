@@ -64,9 +64,9 @@ module RailsAdmin
             elsif request.post? # Do action
 
               if (_action = @actions_list.find { |a| a.name == params[:specified_action][:name].to_sym })
-                args = (params[:specified_action][:args] || {})
+                args = (params.require(:specified_action).require(:args).permit(_action.args.keys) || {})
                 begin
-                  @result = _action.process(@object || (@abstract_model and @abstract_model.model))
+                  @result = _action.process(@object || (@abstract_model and @abstract_model.model), args)
                 rescue Exception => ex
                   @error_message    = _action.can_view_error_message ? ex.message : "Произошла ошибка ;("
                   @error_backtrace  = ex.backtrace.join("\n") if _action.can_view_error_backtrace
@@ -77,8 +77,8 @@ module RailsAdmin
                   format.html {
                     # render @action.template_name
                     flash[:info] = "Попытка выполнения '#{_action.name}':"
-                    flash[:success] = @result unless @error_message
-                    flash[:error] = @error_message if @error_message
+                    flash[:success] = @result.to_s unless @error_message
+                    flash[:error] = @error_message.to_s if @error_message
                     if @error_backtrace
                       flash[:alert] = "<button class='close show_hide' type='button'>⇕</button><pre>#{@error_backtrace}</pre>".html_safe
                     end
@@ -86,9 +86,9 @@ module RailsAdmin
                   }
                   format.js   {
                     render json: {
-                      result: @error_message || @result,
+                      result: (@error_message || @result).to_s,
                       error: {
-                        message:    @error_message,
+                        message:    @error_message.to_s,
                         backtrace:  (@error_backtrace and "<button class='close show_hide' type='button'>⇕</button><pre>#{@error_backtrace}</pre>".html_safe)
                       }.compact
                     }

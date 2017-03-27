@@ -9,6 +9,17 @@ ul
           opts[:data][:remote] = true if a.ajax
         = form_for "specified_action", opts do |f|
           = f.hidden_field :name, value: a.name
+          - if a.args and !a.args.blank?
+            - a.args.each_pair do |a_name, a_type|
+              = f.label "args[#{a_name}]", a_name
+              - case a_type and a_type.to_sym
+              - when :string 
+                = f.text_field "args[#{a_name}]"
+              - when :boolean, :toggle
+                = f.check_box "args[#{a_name}]"
+              - else
+                = f.text_field "args[#{a_name}]"
+              
           = f.submit "сделать"
       .ajax_result_block
       .ajax_error_block
