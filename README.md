@@ -94,6 +94,17 @@ Options for action:
 | threaded                 | Create new thread for this action if that can take a long time   |
 | can_view_error_backtrace | If you want show error code backtrace. Perhaps, only for admins. |
 | can_view_error_message   | If you want show detailed errors message                         |
+| args                     | Hash of possible arguments (and their types) for action          |
+
+Possible argument types (and field types):
+
+
+| Type                     | Field                                                            |
+|--------------------------|------------------------------------------------------------------|
+| nil                      | String (`text_field` method)                                     |
+| :string                  | String (`text_field` method)                                     |
+| :boolean                 | Boolean/Checkbox field (`check_box` method)                      |
+| :toggle                  | Boolean/Checkbox field (`check_box` method)                      |
 
 
 ## Development
