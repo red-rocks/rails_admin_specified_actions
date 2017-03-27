@@ -6,7 +6,6 @@ $(document).on "ajax:complete", "#rails_admin_specified_actions_wrapper #rails_a
   result_block.stop().hide().html(json['result']).show(100)
   error_block.stop().hide()
   if json['error']
-    console.log(json)
     error_block.find(".message").html(json['error']['message'])     if json['error']['message']
     error_block.find(".backtrace").html(json['error']['backtrace']) if json['error']['backtrace']
     error_block.show(100)
@@ -21,7 +20,7 @@ $(document).on "ajax:before", "#rails_admin_specified_actions_wrapper #rails_adm
 
 
 
-$(document).on "click", ".content > .alert > .show_hide, #rails_admin_specified_actions_wrapper #rails_admin_specified_action .ajax_error_block .backtrace > .show_hide", (e)->
+$(document).on "click", ".content > .alert > .show_hide, #rails_admin_specified_actions_wrapper #rails_admin_specified_actions .ajax_error_block .backtrace > .show_hide", (e)->
   e.preventDefault()
   $(e.currentTarget).parent().toggleClass('short')
   return false

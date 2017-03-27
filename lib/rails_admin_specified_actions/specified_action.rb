@@ -37,7 +37,6 @@ class RailsAdminSpecifiedActions::SpecifiedAction
       if _pb.respond_to?(:call)
         _pb.call(target, self.args)
       else
-        puts _pb.inspect
         target and target.send(_pb, self.args)
       end
     else
