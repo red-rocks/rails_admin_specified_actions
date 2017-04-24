@@ -3,6 +3,8 @@ ul
     li
       span= a.label.blank? ? a.name : a.label
       br
+      - unless a.desc.blank?
+        div= a.desc
       .form_block
         ruby:
           opts = {url: _url, method: :post, data: {}}

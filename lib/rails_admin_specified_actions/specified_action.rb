@@ -112,6 +112,10 @@ class RailsAdminSpecifiedActions::SpecifiedAction
     end
   end
 
+  register_instance_option :desc do
+    nil
+  end
+
   register_instance_option :process_block do
     nil #true
   end
