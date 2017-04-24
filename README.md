@@ -25,29 +25,51 @@ Add the sort_embedded action for each model or only for models you need
 ```ruby
     RailsAdmin.config do |config|
       config.actions do
-        ......
+        ...
         specified_actions do
+          # You can add actions like this
+
+          require_relative 'rails_admin_specified_actions'
           RailsAdminSpecifiedActions.root_actions(self)
+
+          # also you can add actions like this:
+          config.action :count do
+            object do
+              User
+            end
+          end # will perform `action_name` for `object`: 'User.count'
         end # for root actions
         specified_actions_for_collection # for collections actions
         specified_actions_for_member # for member actions
+        ...
       end
     end
 ```
 
 For root actions you can create config/initializers/rails_admin_specified_actions_root.rb:
 ```ruby
-require 'rails_admin_specified_actions'
 module RailsAdminSpecifiedActions
 
   class << self
 
     def root_actions(config)
-      config.action :some_root_action, :root do
+      config.action :some_root_action do
         process_block do
           proc { |obj, args|
+            # `obj` will be nil
             Rails.cache.clear # or some other global action
           }
+        end
+      end
+      config.action :some_root_action_with_obj do
+        process_block do
+          proc { |obj, args|
+            # `obj` will be User
+            obj.delete_all # delete them all
+          }
+        end
+        object do
+          Page
         end
       end
     end
@@ -64,21 +86,29 @@ For collection and member actions actions:
 In rails_admin block:
 
 ```ruby
-  config.specified_actions_for_collection do
-    action :count, :collection do
-      process_block do
-        proc { |model, args|
-          model.all.count
-        }
+  rails_admin do
+    ...
+    specified_actions_for_collection do
+      action :count, :collection do
+        process_block do
+          proc { |model, args|
+            model.all.count
+          }
+        end
       end
     end
+    ...
   end
 ```
 or
 
 ```ruby
-  config.specified_actions_for_member do
-    action :touch, :member
+  rails_admin do
+    ...
+    specified_actions_for_member do
+      action :touch
+    end
+    ...
   end
 ```
 or both.

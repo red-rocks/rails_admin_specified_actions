@@ -47,9 +47,9 @@ module RailsAdmin
               end
             end
             if @object
-              @actions_list = (@model_config.specified_actions_for_member || []).select(&:member?)
+              @actions_list = (@model_config.specified_actions_for_member.actions || []).select(&:member?)
             elsif @abstract_model
-              @actions_list = (@model_config.specified_actions_for_collection || []).select(&:collection?)
+              @actions_list = (@model_config.specified_actions_for_collection.actions || []).select(&:collection?)
             else
               @actions_list = (RailsAdmin::Config.specified_actions || []).select(&:root?)
             end
@@ -64,15 +64,20 @@ module RailsAdmin
             elsif request.post? # Do action
 
               if (_action = @actions_list.find { |a| a.name == params[:specified_action][:name].to_sym })
-                args = (params.require(:specified_action).require(:args).permit(_action.args.keys) || {})
+                if _action.args.blank?
+                  args = {}
+                else
+                  args = (params.require(:specified_action).require(:args).permit(_action.args.keys) || {})
+                end
                 begin
-                  @result = _action.process(@object || (@abstract_model and @abstract_model.model), args)
+                  obj = @object || (@abstract_model and @abstract_model.model) || _action.object
+                  @result = _action.process(obj, args)
+                  @result = "Задача выполняется" if @result.is_a?(Thread)
+                  @result ||= "Успешно!"
                 rescue Exception => ex
                   @error_message    = _action.can_view_error_message ? ex.message : "Произошла ошибка ;("
                   @error_backtrace  = ex.backtrace.join("\n") if _action.can_view_error_backtrace
                 end
-                @result = "Задача выполняется" if @result.is_a?(Thread)
-                @result ||= "Успешно!"
                 respond_to do |format|
                   format.html {
                     # render @action.template_name

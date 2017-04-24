@@ -22,40 +22,53 @@ class RailsAdminSpecifiedActions::SpecifiedAction
   end
 
   def root?
-    self.target == :root
+    @root
+    # @parent.nil? or @parent == @root
+    # self.target == :root
   end
   def collection?
-    self.target == :collection
+    @parent.is_a? RailsAdmin::Config::Sections::SpecifiedActionsForCollection
+    # self.target == :collection
   end
   def member?
-    self.target == :member
+    @parent.is_a? RailsAdmin::Config::Sections::SpecifiedActionsForMember
+    # self.target == :member
+  end
+
+  # private :do_process
+  def do_process(target, args)
+    if (_pb = self.process_block)
+      if _pb.respond_to?(:call)
+        begin
+          _pb.call(target, args)
+        rescue
+          _pb.call(target)
+        end
+      else
+        begin
+          target and target.try(_pb, args)
+        rescue
+          target and target.try(_pb)
+        end
+      end
+    else
+      begin
+        target and target.try(@name, args)
+      rescue
+        target and target.try(@name)
+      end
+    end
   end
 
 
   def process(target, args)
     return threaded_process(target, args) if self.threaded
-    if (_pb = self.process_block)
-      if _pb.respond_to?(:call)
-        _pb.call(target, args)
-      else
-        target and target.send(_pb, args)
-      end
-    else
-      target and target.send(@name, args)
-    end
+    do_process(target, args)
   end
 
   def threaded_process(target, args)
     Thread.new(self, target, args) do |action, target, args|
-      if (_pb = action.process_block)
-        if _pb.respond_to?(:call)
-          _pb.call(target, args)
-        else
-          target and target.send(_pb, args)
-        end
-      else
-        target and target.send(action.name, args)
-      end
+      action.do_process(target, args)
     end
   end
 
@@ -100,7 +113,7 @@ class RailsAdminSpecifiedActions::SpecifiedAction
   end
 
   register_instance_option :process_block do
-    true
+    nil #true
   end
 
   register_instance_option :target do
@@ -113,6 +126,10 @@ class RailsAdminSpecifiedActions::SpecifiedAction
 
   register_instance_option :threaded do
     false
+  end
+
+  register_instance_option :object do
+    nil
   end
 
   register_instance_option :args do

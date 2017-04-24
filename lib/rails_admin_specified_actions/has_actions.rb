@@ -122,7 +122,7 @@ module RailsAdmin
         all_actions.collect { |a| a.with(bindings) }.select(&:visible?)
       end
 
-    protected
+    # protected
 
       # Raw fields.
       # Recursively returns parent section's raw fields
@@ -136,7 +136,7 @@ module RailsAdmin
         else
           # parent is RailsAdmin::Config::Model, recursion is on Section's classes
           if respond_to?(:parent) and parent
-            @_ro_actions ||= parent.send(self.class.superclass.to_s.underscore.split('/').last)._actions(true).freeze
+            @_ro_actions ||= [].freeze #parent.send(self.class.superclass.to_s.underscore.split('/').last)._actions(true).freeze
           else
             RailsAdmin::Config.specified_actions ||= []
             @_ro_actions ||= RailsAdmin::Config.specified_actions
