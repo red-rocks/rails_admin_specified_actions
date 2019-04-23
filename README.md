@@ -118,6 +118,7 @@ Options for action:
 | Option name              | Description                                                      | Default value |
 |--------------------------|------------------------------------------------------------------|---------------|
 | label                    | Displayed label                                                  | as name       |
+| button-text              | Text on action button                                            | as name       |
 | process_block            | Proc for action or action name for \__send__()                   | nil           |
 | target                   | :root, :collection or :member                                    | nil           |
 | ajax                     | If you don`t need reload page                                    | false         |
