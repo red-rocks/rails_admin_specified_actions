@@ -115,16 +115,16 @@ or both.
 
 Options for action:
 
-| Option name              | Description                                                      |
-|--------------------------|------------------------------------------------------------------|
-| label                    | Displayed label                                                  |
-| process_block            | Proc for action or action name for \__send__()                   |
-| target                   | :root, :collection or :member                                    |
-| ajax                     | If you don`t need reload page                                    |
-| threaded                 | Create new thread for this action if that can take a long time   |
-| can_view_error_backtrace | If you want show error code backtrace. Perhaps, only for admins. |
-| can_view_error_message   | If you want show detailed errors message                         |
-| args                     | Hash of possible arguments (and their types) for action          |
+| Option name              | Description                                                      | Default value |
+|--------------------------|------------------------------------------------------------------|---------------|
+| label                    | Displayed label                                                  | as name       |
+| process_block            | Proc for action or action name for \__send__()                   | nil           |
+| target                   | :root, :collection or :member                                    | nil           |
+| ajax                     | If you don`t need reload page                                    | false         |
+| threaded                 | Create new thread for this action if that can take a long time   | false         |
+| can_view_error_backtrace | If you want show error code backtrace. Perhaps, only for admins. | 'only admin'  |
+| can_view_error_message   | If you want show detailed errors message                         | false         |
+| args                     | Hash of possible arguments (and their types) for action          | {}            |
 
 Possible argument types (and field types):
 

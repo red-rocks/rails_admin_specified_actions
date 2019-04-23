@@ -22,7 +22,8 @@ ul
               - else
                 = f.text_field "args[#{a_name}]"
               
-          = f.submit "сделать"
+          / = f.submit "сделать"
+          = f.submit a.button_text
       .ajax_result_block
       .ajax_error_block
         .message

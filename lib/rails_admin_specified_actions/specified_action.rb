@@ -76,6 +76,14 @@ class RailsAdminSpecifiedActions::SpecifiedAction
     name
   end
 
+  register_instance_option :button_text do
+    name
+  end
+
+  register_instance_option :desc do
+    nil
+  end
+
   register_instance_option :visible? do
     true
   end
@@ -112,10 +120,6 @@ class RailsAdminSpecifiedActions::SpecifiedAction
     end
   end
 
-  register_instance_option :desc do
-    nil
-  end
-
   register_instance_option :process_block do
     nil #true
   end
@@ -139,5 +143,9 @@ class RailsAdminSpecifiedActions::SpecifiedAction
   register_instance_option :args do
     {}
   end
+
+        register_instance_option :button_text do
+          'do'
+        end
 
 end
